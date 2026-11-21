@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
+      ANDROID_BUILD_TOOLS_VERSION: '36.0.0'
       ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/28.2.13676358
     steps:
       - uses: actions/checkout@v4

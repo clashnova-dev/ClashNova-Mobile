@@ -15,7 +15,7 @@ root = Path(__file__).resolve().parent.parent
 version, code = re.search(r'^version: (\d+\.\d+\.\d+)\+(\d+)', (root/'pubspec.yaml').read_text(), re.M).groups()
 apk = root/'build/app/outputs/flutter-apk/app-release.apk'
 sdk = Path(os.environ['ANDROID_HOME'])
-tools = max((p for p in (sdk/'build-tools').iterdir() if re.fullmatch(r'\d+\.\d+\.\d+', p.name)), key=lambda p: tuple(int(x) for x in p.name.split('.')))
+tools = sdk/'build-tools'/os.environ['ANDROID_BUILD_TOOLS_VERSION'] if os.environ.get('ANDROID_BUILD_TOOLS_VERSION') else max((p for p in (sdk/'build-tools').iterdir() if re.fullmatch(r'\d+\.\d+\.\d+', p.name)), key=lambda p: tuple(int(x) for x in p.name.split('.')))
 signature = subprocess.check_output([tools/'apksigner', 'verify', '--verbose', '--print-certs-pem', apk], text=True)
 certificates = re.findall(r'-----BEGIN CERTIFICATE-----\s+(.*?)\s+-----END CERTIFICATE-----', signature, re.S)
 assert len(certificates) == 1, 'Expected exactly one Android release signer'
