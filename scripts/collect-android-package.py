@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import hashlib
+import base64
 import io
 import json
 import os
@@ -15,10 +16,12 @@ version, code = re.search(r'^version: (\d+\.\d+\.\d+)\+(\d+)', (root/'pubspec.ya
 apk = root/'build/app/outputs/flutter-apk/app-release.apk'
 sdk = Path(os.environ['ANDROID_HOME'])
 tools = max((p for p in (sdk/'build-tools').iterdir() if re.fullmatch(r'\d+\.\d+\.\d+', p.name)), key=lambda p: tuple(int(x) for x in p.name.split('.')))
-signature = subprocess.check_output([tools/'apksigner', 'verify', '--verbose', '--print-certs', apk], text=True)
-certificate = re.search(r'Signer #1 certificate SHA-256 digest: ([0-9a-fA-F]+)', signature)[1].lower()
+signature = subprocess.check_output([tools/'apksigner', 'verify', '--verbose', '--print-certs-pem', apk], text=True)
+certificates = re.findall(r'-----BEGIN CERTIFICATE-----\s+(.*?)\s+-----END CERTIFICATE-----', signature, re.S)
+assert len(certificates) == 1, 'Expected exactly one Android release signer'
+certificate = hashlib.sha256(base64.b64decode(re.sub(r'\s+', '', certificates[0]), validate=True)).hexdigest()
 assert certificate == (root/'android/release-certificate.sha256').read_text().strip()
-assert 'Signer #1 certificate DN: CN=clashnova-dev' in signature
+# Pinning the certificate DER also pins the expected clashnova-dev identity.
 badging = subprocess.check_output([tools/'aapt', 'dump', 'badging', apk], text=True)
 assert "package: name='dev.airport.airport_mobile'" in badging
 assert "versionName='"+version+"'" in badging and "versionCode='"+code+"'" in badging
