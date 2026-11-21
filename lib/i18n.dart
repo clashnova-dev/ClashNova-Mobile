@@ -1,0 +1,524 @@
+/// Lightweight i18n for the mobile app, mirroring the desktop client: English
+/// dot-path keys mapped to localized strings, with `{name}` placeholders.
+///
+/// Look up via [AppState.t]; missing keys fall back to English, then to the key
+/// itself so gaps are visible rather than silent.
+library;
+
+import 'i18n/de.dart';
+import 'i18n/fr.dart';
+import 'i18n/ja.dart';
+import 'i18n/ko.dart';
+import 'i18n/ru.dart';
+
+/// The locales the UI ships. `system` follows the device language.
+enum AppLanguage { system, zh, en, ja, ko, de, fr, ru }
+
+String languageTag(AppLanguage l) => switch (l) {
+      AppLanguage.zh => 'zh',
+      AppLanguage.en => 'en',
+      AppLanguage.ja => 'ja',
+      AppLanguage.ko => 'ko',
+      AppLanguage.de => 'de',
+      AppLanguage.fr => 'fr',
+      AppLanguage.ru => 'ru',
+      AppLanguage.system => 'system',
+    };
+
+AppLanguage languageFromTag(String? tag) => switch (tag) {
+      'zh' => AppLanguage.zh,
+      'en' => AppLanguage.en,
+      'ja' => AppLanguage.ja,
+      'ko' => AppLanguage.ko,
+      'de' => AppLanguage.de,
+      'fr' => AppLanguage.fr,
+      'ru' => AppLanguage.ru,
+      _ => AppLanguage.system,
+    };
+
+/// Replace `{key}` tokens in [template] with [params].
+String interpolate(String template, Map<String, String>? params) {
+  if (params == null || params.isEmpty) return template;
+  var out = template;
+  params.forEach((k, v) => out = out.replaceAll('{$k}', v));
+  return out;
+}
+
+const Map<String, String> kEn = {
+  // common
+  'common.cancel': 'Cancel',
+  'common.add': 'Add',
+  'common.copy': 'Copy',
+  'common.delete': 'Delete',
+  'common.refresh': 'Refresh',
+  'common.paste': 'Paste',
+  'common.current': 'Current',
+  'common.setCurrent': 'Set as current',
+  'common.none': 'None',
+
+  // login
+  'login.subtitle': 'Sign in to the control panel for your subscriptions and nodes, or use a local subscription.',
+  'login.baseUrl': 'Control panel URL',
+  'login.email': 'Email',
+  'login.password': 'Password',
+  'login.signIn': 'Sign in',
+  'login.useLocal': 'Use a local subscription',
+
+  // status
+  'status.connected': 'Connected',
+  'status.connecting': 'Connecting',
+  'status.disconnecting': 'Disconnecting',
+  'status.failed': 'Failed',
+  'status.idle': 'Not connected',
+
+  // routing mode
+  'mode.rule': 'Rule',
+  'mode.global': 'Global',
+  'mode.direct': 'Direct',
+  'mode.ruleDesc': 'Rule-based: direct at home, proxy abroad',
+  'mode.globalDesc': 'All traffic through the proxy',
+  'mode.directDesc': 'Everything direct, no proxy',
+  'chain.title': 'Proxy chain',
+  'chain.active': 'Active',
+  'chain.off': 'Off',
+  'chain.entryHint': 'Relay through several nodes in order',
+  'chain.hint': 'Relay traffic through several nodes in order. Latency adds up and the whole chain fails if any hop does.',
+  'chain.device': 'Device',
+  'chain.target': 'Target',
+  'chain.node': 'Node',
+  'chain.entry': 'Entry',
+  'chain.relay': 'Relay',
+  'chain.exit': 'Exit',
+  'chain.add': 'Add node',
+  'chain.apply': 'Apply chain',
+  'chain.applyOff': 'Turn off chain',
+  'chain.clear': 'Clear',
+  'chain.empty': 'No nodes yet',
+  'chain.emptyHint': 'Add at least two nodes to form a chain (entry → exit).',
+  'chain.pick': 'Choose a node',
+  'chain.allAdded': 'All nodes are already in the chain',
+
+  // home
+  'home.routeMode': 'Routing mode',
+  'home.subscription': 'Subscriptions',
+  'home.subsSubtitle': 'Clash · sing-box · generic · {n} total',
+  'home.connections': 'Connections',
+  'home.connSubtitle': 'Active {n}',
+  'home.logs': 'Logs',
+  'home.logsSubtitle': 'Live core logs',
+  'home.up': 'Up',
+  'home.down': 'Down',
+  'home.autoSelect': 'Automatic',
+  'home.noNodeHint': 'No nodes — tap to add a subscription',
+  'home.autoDesc': 'Current · fastest by latency',
+  'home.currentNode': 'Current · {detail}',
+
+  // nodes
+  'nodes.title': 'Nodes',
+  'nodes.empty': 'No nodes yet',
+  'nodes.emptyHintLoggedIn': 'After you buy and enable a plan, nodes show here; or add a custom subscription on the Subscriptions page.',
+  'nodes.emptyHintLocal': 'Add a Clash / sing-box / generic subscription on the Subscriptions page; pull to refresh.',
+  'nodes.noMatch': 'No matching nodes',
+  'nodes.noMatchHint': 'Try another keyword.',
+  'nodes.testAll': 'Test',
+  'nodes.stopProgress': 'Stop {done}/{total}',
+  'nodes.search': 'Search name / region / protocol',
+  'nodes.sortDefault': 'Default order',
+  'nodes.sortLatency': 'Lowest latency',
+  'nodes.metaOnline': 'All {total} · online {online}',
+  'nodes.metaCount': '{total} nodes',
+  'nodes.autoDesc': 'Picks the fastest node by latency (urltest)',
+  'nodes.unnamed': 'Unnamed node',
+  'nodes.timeout': 'Timeout',
+  'nodes.offline': 'Offline',
+
+  // subscriptions
+  'subs.title': 'Subscriptions',
+  'subs.add': 'Add subscription',
+  'subs.scan': 'Scan QR code',
+  'subs.scanHint': 'Point the camera at a subscription QR code.',
+  'subs.scanFailed': 'No subscription link found. Try another code.',
+  'subs.cameraDenied': 'Camera access is needed to scan a QR code.',
+  'subs.empty': 'No subscriptions yet',
+  'subs.emptyHint': 'Tap "Add subscription" to paste a link or scan a QR code. You can also sign in to buy a plan.',
+  'subs.airport': 'Plan subscriptions',
+  'subs.custom': 'Custom subscriptions',
+  'subs.formats': 'Supports Clash / sing-box / generic (base64) subscriptions',
+  'subs.nameOptional': 'Name (optional)',
+  'subs.url': 'Subscription URL',
+  'subs.valid': 'Active',
+  'subs.copySub': 'Copy subscription',
+  'subs.refreshing': 'Refreshing…',
+  'subs.nodeCount': '{n} nodes',
+  'subs.updatedAt': 'Updated {ago}',
+  'subs.refreshNodes': 'Refresh nodes',
+
+  // relative time
+  'time.justNow': 'just now',
+  'time.minutesAgo': '{n} min ago',
+  'time.hoursAgo': '{n} h ago',
+  'time.daysAgo': '{n} d ago',
+
+  // connections
+  'conn.title': 'Connections',
+  'conn.empty': 'No active connections',
+  'conn.emptyHint': 'Once connected, every network connection shows here live.',
+  'conn.total': '{bytes} total',
+  'conn.close': 'Close connection',
+
+  // logs
+  'logs.title': 'Logs',
+  'logs.empty': 'No logs yet',
+  'logs.emptyHint': 'Once connected, the core prints live logs here.',
+
+  // settings
+  'settings.title': 'Settings',
+  'settings.general': 'General',
+  'settings.account': 'Account',
+  'settings.accountRow': 'Account',
+  'settings.local': 'Local',
+  'settings.localMode': 'Local mode',
+  'settings.loggedIn': 'Signed in',
+  'settings.controlPanel': 'Control panel',
+  'settings.proxy': 'Proxy',
+  'settings.routeMode': 'Routing mode',
+  'settings.node': 'Node',
+  'settings.subscription': 'Subscriptions',
+  'settings.subCount': '{n}',
+  'settings.about': 'About',
+  'settings.help': 'Help & FAQ',
+  'settings.version': 'Version',
+  'settings.kernel': 'Core',
+  'settings.license': 'License',
+  'settings.language': 'Language',
+  'settings.vpnNote': 'The system VPN is powered by the official sing-box (libbox) core. On iOS, the first connect asks to add a VPN configuration — please allow it in the system prompt.',
+  'settings.logout': 'Sign out',
+  'settings.logoutLocal': 'Exit local mode',
+  'settings.refresh': 'Refresh',
+
+  // language picker
+  'lang.title': 'Language',
+  'lang.system': 'Follow system',
+  'lang.zh': '简体中文',
+  'lang.en': 'English',
+
+  // theme picker
+  'settings.theme': 'Theme',
+  'theme.title': 'Theme',
+  'theme.system': 'Follow system',
+  'theme.light': 'Light',
+  'theme.dark': 'Dark',
+
+  // help
+  'help.title': 'Help',
+  'help.cat.subs': 'Subscriptions & nodes',
+  'help.cat.conn': 'Connection & routing',
+  'help.cat.privacy': 'Privacy',
+  'help.q.start': 'How do I get started?',
+  'help.a.start': 'On the Subscriptions page, tap "Add subscription" at the bottom right and paste a Clash / sing-box / generic (base64) link. Once nodes are parsed, pick one on the Nodes page (or leave "Automatic") and tap connect on the home screen. Signing in to a plan account shows its subscriptions and nodes directly.',
+  'help.q.formats': 'Which subscription formats are supported?',
+  'help.a.formats': 'Clash YAML, sing-box JSON, and generic base64 / share-link subscriptions (vmess, vless, trojan, ss, hysteria2, tuic, etc.). Unrecognized node types are skipped without affecting the rest.',
+  'help.q.noNodes': 'No nodes after adding / refresh failed?',
+  'help.a.noNodes': 'First check that the subscription URL is reachable and the format is supported, then tap refresh on the subscription card. Subscription links usually contain your credentials — do not share them.',
+  'help.q.latency': 'How do latency test and Automatic work?',
+  'help.a.latency': 'While connected, Test measures a request through each node. While disconnected, ordinary nodes get a TCP handshake; Hysteria2 and TUIC speak only UDP, so connect first. Latency is response time, not download bandwidth. Automatic selection is chosen by the core periodically by latency and does not guarantee a fixed region or the highest speed; pick a node manually when you need a fixed exit.',
+  'help.q.modes': 'Rule / Global — which one?',
+  'help.a.modes': 'Rule: domestic and LAN traffic go direct, the rest via the proxy. Global: all traffic via the proxy. You can switch on the home screen or in Settings; it applies live while connected.',
+  'help.q.chain': 'What is a proxy chain?',
+  'help.a.chain': 'Relays traffic through two or more nodes in order: it enters the first node, hops to each next one, and exits from the last. Build it on the Nodes page — useful when you need to land in a specific region or hide the real exit. Each hop adds latency, and the whole chain fails if any node is down.',
+  'help.q.ios': 'What happens on the first iOS connect?',
+  'help.a.ios': 'The first time you connect, the system asks to add a VPN configuration — please allow it. Afterwards you can see it under System Settings → General → VPN & Device Management.',
+  'help.q.noNet': 'Connected but no internet?',
+  'help.a.noNet': 'Make sure the active subscription has usable nodes, the selected node is online (or "Automatic"), and the routing mode is right; then check the Logs page for the core output.',
+  'help.q.privacy': 'How is my data handled?',
+  'help.a.privacy': 'Subscription links and logs may contain domains, IPs, and credentials — review before sharing. The app processes subscription and connection data only on your device.',
+
+  // runtime messages
+  'msg.welcome': 'Sign in to see your subscriptions and nodes',
+  'msg.addSubToStart': 'Add a subscription to get started',
+  'msg.vpnConnected': 'System VPN connected',
+  'msg.vpnStopped': 'System VPN stopped: {error}',
+  'msg.initFailed': 'sing-box init failed: {error}',
+  'msg.requestFailed': 'Request failed',
+  'msg.signedIn': 'Signed in',
+  'msg.localEmpty': 'Local mode: add a subscription, or buy a plan on the web console and sign in',
+  'msg.localMode': 'Local mode',
+  'msg.signedOut': 'Signed out',
+  'msg.noSubs': 'No subscriptions yet',
+  'msg.loadedSubs': 'Loaded {n} subscriptions',
+  'msg.nodesOffline': 'Node agents are offline',
+  'msg.noTestable': 'No nodes to test',
+  'msg.testDone': 'Test complete',
+  'msg.testFailed': 'Test failed: {error}',
+  'msg.udpTestNeedsConnection': 'Hysteria2 and TUIC use UDP only. Connect first, then test.',
+  'msg.refreshingSub': 'Refreshing "{name}"…',
+  'msg.downloadFailed': 'Download failed: HTTP {code}',
+  'msg.parseEmpty': 'No usable nodes parsed from "{name}" (format may be unsupported)',
+  'msg.subUpdated': '"{name}" updated: {n} nodes',
+  'msg.refreshFailed': 'Refresh failed: {error}',
+  'msg.disconnected': 'Disconnected',
+  'msg.disconnectFailed': 'Disconnect failed: {error}',
+  'msg.coreNotReady': 'Core not ready',
+  'msg.addSubFirst': 'Add a subscription first',
+  'msg.preparing': 'Preparing "{name}"',
+  'msg.noNodesGuard': 'This subscription has no nodes — refresh or switch it on the Subscriptions page',
+  'msg.requestingVpn': 'Requesting VPN permission and connecting',
+  'msg.connectFailed': 'Connect failed: {error}',
+  'msg.httpsRequired': 'The subscription URL must use HTTPS',
+  'msg.subscriptionTooLarge': 'The subscription exceeds the size or node limit.',
+  'msg.unsafeSubscription': 'The subscription contains unsupported or unsafe configuration.',
+  'msg.redirectRejected': 'The server redirected to an address that is not allowed.',
+  'msg.networkFailed': 'The secure request failed or timed out. Please check your network.',
+  'msg.storageFailed': 'Secure storage is unavailable. Existing data was preserved; changes could not be saved.',
+  'msg.subDownloadFailed': 'Subscription download failed: {code}',
+  'msg.noNodesInSub': 'No usable nodes in the subscription',
+};
+
+const Map<String, String> kZh = {
+  // common
+  'common.cancel': '取消',
+  'common.add': '添加',
+  'common.copy': '复制',
+  'common.delete': '删除',
+  'common.refresh': '刷新',
+  'common.paste': '粘贴',
+  'common.current': '当前',
+  'common.setCurrent': '设为当前',
+  'common.none': '暂无',
+
+  // login
+  'login.subtitle': '登录控制面查看订阅与节点，或直接使用本地订阅。',
+  'login.baseUrl': '控制面地址',
+  'login.email': '邮箱',
+  'login.password': '密码',
+  'login.signIn': '登录',
+  'login.useLocal': '使用通用订阅',
+
+  // status
+  'status.connected': '已连接',
+  'status.connecting': '连接中',
+  'status.disconnecting': '断开中',
+  'status.failed': '连接失败',
+  'status.idle': '未连接',
+
+  // routing mode
+  'mode.rule': '规则',
+  'mode.global': '全局',
+  'mode.direct': '直连',
+  'mode.ruleDesc': '按分流规则：国内直连，国外走代理',
+  'mode.globalDesc': '所有流量都走代理',
+  'mode.directDesc': '全部直连，不走代理',
+  'chain.title': '链式代理',
+  'chain.active': '已启用',
+  'chain.off': '未启用',
+  'chain.entryHint': '按顺序串联多个节点',
+  'chain.hint': '按顺序串联多个节点：流量依次经过每个节点。延迟会累加，任一节点失败整条链路都会断。',
+  'chain.device': '设备',
+  'chain.target': '目标',
+  'chain.node': '节点',
+  'chain.entry': '入口',
+  'chain.relay': '中继',
+  'chain.exit': '出口',
+  'chain.add': '添加节点',
+  'chain.apply': '应用链路',
+  'chain.applyOff': '关闭链路',
+  'chain.clear': '清空',
+  'chain.empty': '还没有节点',
+  'chain.emptyHint': '至少添加两个节点组成链路（入口 → 出口）。',
+  'chain.pick': '选择节点',
+  'chain.allAdded': '所有节点都已加入',
+
+  // home
+  'home.routeMode': '路由模式',
+  'home.subscription': '订阅',
+  'home.subsSubtitle': 'Clash · sing-box · 通用 · 共 {n} 条',
+  'home.connections': '连接',
+  'home.connSubtitle': '活跃连接 {n}',
+  'home.logs': '日志',
+  'home.logsSubtitle': '实时内核日志',
+  'home.up': '上行',
+  'home.down': '下行',
+  'home.autoSelect': '自动选择',
+  'home.noNodeHint': '暂无节点，点此添加订阅',
+  'home.autoDesc': '当前 · 按延迟自动挑选',
+  'home.currentNode': '当前节点 · {detail}',
+
+  // nodes
+  'nodes.title': '节点',
+  'nodes.empty': '暂无可用节点',
+  'nodes.emptyHintLoggedIn': '购买并启用订阅后，这里会显示可用节点；或到订阅页添加自定义订阅。',
+  'nodes.emptyHintLocal': '到订阅页添加 Clash / sing-box / 通用订阅，下拉可刷新。',
+  'nodes.noMatch': '没有匹配的节点',
+  'nodes.noMatchHint': '换个关键词试试。',
+  'nodes.testAll': '测速',
+  'nodes.stopProgress': '停止 {done}/{total}',
+  'nodes.search': '搜索名称 / 地区 / 协议',
+  'nodes.sortDefault': '默认顺序',
+  'nodes.sortLatency': '最低延迟',
+  'nodes.metaOnline': '全部 {total} · 在线 {online}',
+  'nodes.metaCount': '全部 {total} 个节点',
+  'nodes.autoDesc': '按延迟自动挑选最快节点（urltest）',
+  'nodes.unnamed': '未命名节点',
+  'nodes.timeout': '超时',
+  'nodes.offline': '未上线',
+
+  // subscriptions
+  'subs.title': '订阅',
+  'subs.add': '添加订阅',
+  'subs.scan': '扫描二维码',
+  'subs.scanHint': '将订阅二维码放入框内。',
+  'subs.scanFailed': '没有识别到订阅链接，请换一个二维码。',
+  'subs.cameraDenied': '需要相机权限才能扫描二维码。',
+  'subs.empty': '还没有订阅',
+  'subs.emptyHint': '点右下角「添加订阅」，粘贴链接或扫描二维码导入。也可以登录后购买套餐。',
+  'subs.airport': '机场订阅',
+  'subs.custom': '自定义订阅',
+  'subs.formats': '支持 Clash / sing-box / 通用(base64) 订阅',
+  'subs.nameOptional': '名称（可选）',
+  'subs.url': '订阅链接',
+  'subs.valid': '有效',
+  'subs.copySub': '复制订阅',
+  'subs.refreshing': '正在刷新…',
+  'subs.nodeCount': '{n} 个节点',
+  'subs.updatedAt': '更新于 {ago}',
+  'subs.refreshNodes': '刷新节点',
+
+  // relative time
+  'time.justNow': '刚刚',
+  'time.minutesAgo': '{n} 分钟前',
+  'time.hoursAgo': '{n} 小时前',
+  'time.daysAgo': '{n} 天前',
+
+  // connections
+  'conn.title': '连接',
+  'conn.empty': '暂无活跃连接',
+  'conn.emptyHint': '连接 VPN 后，这里会实时显示每一条网络连接。',
+  'conn.total': '共 {bytes}',
+  'conn.close': '关闭连接',
+
+  // logs
+  'logs.title': '日志',
+  'logs.empty': '暂无日志',
+  'logs.emptyHint': '连接 VPN 后，内核会在这里输出实时日志。',
+
+  // settings
+  'settings.title': '设置',
+  'settings.general': '通用',
+  'settings.account': '账户',
+  'settings.accountRow': '账号',
+  'settings.local': '本地',
+  'settings.localMode': '本地模式',
+  'settings.loggedIn': '已登录',
+  'settings.controlPanel': '控制面地址',
+  'settings.proxy': '代理',
+  'settings.routeMode': '路由模式',
+  'settings.node': '节点',
+  'settings.subscription': '订阅',
+  'settings.subCount': '{n} 条',
+  'settings.about': '关于',
+  'settings.help': '帮助与常见问题',
+  'settings.version': '版本',
+  'settings.kernel': '内核',
+  'settings.license': '开源协议',
+  'settings.language': '语言',
+  'settings.vpnNote': '系统 VPN 由官方 sing-box（libbox）内核驱动。iOS 首次连接会请求添加 VPN 配置，请在系统弹窗中允许。',
+  'settings.logout': '退出登录',
+  'settings.logoutLocal': '退出本地模式',
+  'settings.refresh': '刷新',
+
+  // language picker
+  'lang.title': '语言',
+  'lang.system': '跟随系统',
+  'lang.zh': '简体中文',
+  'lang.en': 'English',
+
+  // theme picker
+  'settings.theme': '主题',
+  'theme.title': '主题',
+  'theme.system': '跟随系统',
+  'theme.light': '浅色',
+  'theme.dark': '深色',
+
+  // help
+  'help.title': '帮助',
+  'help.cat.subs': '订阅与节点',
+  'help.cat.conn': '连接与路由',
+  'help.cat.privacy': '隐私',
+  'help.q.start': '怎样开始使用？',
+  'help.a.start': '在「订阅」右下角点「添加订阅」，粘贴一个 Clash / sing-box / 通用(base64) 链接；解析出节点后，到「节点」选择一个节点或保持「自动选择」，回首页点连接即可。登录机场账号后可直接看到套餐订阅与节点。',
+  'help.q.formats': '支持哪些订阅格式？',
+  'help.a.formats': '支持 Clash YAML、sing-box JSON，以及通用的 base64 / 分享链接订阅（vmess、vless、trojan、ss、hysteria2、tuic 等）。不认识的节点类型会自动跳过，不影响其余节点。',
+  'help.q.noNodes': '添加后没有节点 / 刷新失败？',
+  'help.a.noNodes': '先确认订阅链接可以访问、格式受支持，再到订阅卡上点刷新。订阅链接通常包含你的凭据，请勿分享给他人。',
+  'help.q.latency': '测速和自动选择怎么用？',
+  'help.a.latency': '已连接时，「测速」会通过每条线路发一次请求。未连接时，普通线路做 TCP 握手；Hysteria2、TUIC 只走 UDP，要先连接再测。延迟是响应时间，不代表下载带宽。自动选择由内核按延迟定期挑选，不保证固定地区或最高速度；需要固定出口时请手动选节点。',
+  'help.q.modes': '规则 / 全局怎么选？',
+  'help.a.modes': '规则：国内与局域网直连、其余走代理；全局：所有流量都走代理。可在首页或设置里切换，已连接时即时生效。',
+  'help.q.chain': '什么是链式代理？',
+  'help.a.chain': '把两个或更多节点按顺序串起来：流量先进入第一个节点，再逐个转发到最后一个节点出网。在「节点」页搭建，适合需要落地在特定地区或隐藏真实出口的场景。每多一跳延迟都会增加，且任一节点不可用整条链路都会断。',
+  'help.q.ios': 'iOS 首次连接要做什么？',
+  'help.a.ios': '第一次点连接时，系统会弹窗请求添加 VPN 配置，请允许。之后可在「系统设置 → 通用 → VPN 与设备管理」里看到该配置。',
+  'help.q.noNet': '连上了却上不了网？',
+  'help.a.noNet': '确认当前订阅有可用节点、选中的是在线节点或「自动」、路由模式正确；再到「日志」页看内核实时输出排查。',
+  'help.q.privacy': '我的数据怎么处理？',
+  'help.a.privacy': '订阅链接与日志可能包含域名、IP 和凭据，分享前请先检查。App 仅在本机处理订阅与连接数据。',
+
+  // runtime messages
+  'msg.welcome': '登录后查看订阅与节点',
+  'msg.addSubToStart': '添加订阅即可开始使用',
+  'msg.vpnConnected': '系统 VPN 已连接',
+  'msg.vpnStopped': '系统 VPN 已停止：{error}',
+  'msg.initFailed': 'sing-box 初始化失败：{error}',
+  'msg.requestFailed': '请求失败',
+  'msg.signedIn': '已登录',
+  'msg.localEmpty': '本地模式：请添加订阅，或在网页控制台购买后登录',
+  'msg.localMode': '本地模式',
+  'msg.signedOut': '已退出',
+  'msg.noSubs': '还没有订阅',
+  'msg.loadedSubs': '已加载 {n} 条订阅',
+  'msg.nodesOffline': '节点代理未上线',
+  'msg.noTestable': '没有可测速的节点',
+  'msg.testDone': '测速完成',
+  'msg.testFailed': '测速失败：{error}',
+  'msg.udpTestNeedsConnection': 'Hysteria2、TUIC 只走 UDP，请先连接再测速',
+  'msg.refreshingSub': '正在刷新订阅「{name}」…',
+  'msg.downloadFailed': '下载失败：HTTP {code}',
+  'msg.parseEmpty': '订阅「{name}」未解析到可用节点（格式可能不受支持）',
+  'msg.subUpdated': '订阅「{name}」已更新：{n} 个节点',
+  'msg.refreshFailed': '刷新失败：{error}',
+  'msg.disconnected': '已断开',
+  'msg.disconnectFailed': '断开失败：{error}',
+  'msg.coreNotReady': '连接内核未就绪',
+  'msg.addSubFirst': '请先添加订阅',
+  'msg.preparing': '正在准备「{name}」',
+  'msg.noNodesGuard': '订阅暂无可用节点，请在订阅页刷新或更换订阅',
+  'msg.requestingVpn': '正在申请系统 VPN 权限并连接',
+  'msg.connectFailed': '连接失败：{error}',
+  'msg.httpsRequired': '订阅地址必须使用 HTTPS',
+  'msg.subscriptionTooLarge': '订阅超出大小或节点数量限制。',
+  'msg.unsafeSubscription': '订阅包含不支持或不安全的配置。',
+  'msg.redirectRejected': '服务器跳转到不允许访问的地址。',
+  'msg.networkFailed': '安全请求失败或超时，请检查网络。',
+  'msg.storageFailed': '安全存储不可用，已保留原有数据，本次修改无法保存。',
+  'msg.subDownloadFailed': '订阅下载失败：{code}',
+  'msg.noNodesInSub': '订阅中没有可用节点',
+};
+
+/// All shipped message tables, keyed by locale code.
+const Map<String, Map<String, String>> _tables = {
+  'en': kEn,
+  'zh': kZh,
+  'ja': kJa,
+  'ko': kKo,
+  'de': kDe,
+  'fr': kFr,
+  'ru': kRu,
+};
+
+/// Resolve a key for [locale], falling back to English then the key, with
+/// interpolation.
+String translate(String locale, String key, [Map<String, String>? params]) {
+  final table = _tables[locale] ?? kEn;
+  final s = table[key] ?? kEn[key] ?? key;
+  return interpolate(s, params);
+}

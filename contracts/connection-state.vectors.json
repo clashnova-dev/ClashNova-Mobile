@@ -1,0 +1,41 @@
+{
+  "states": [
+    "IDLE",
+    "PREPARING",
+    "CONNECTING",
+    "CONNECTED",
+    "RECONNECTING",
+    "DISCONNECTING",
+    "FAILED"
+  ],
+  "events": [
+    "start",
+    "core_spawned",
+    "core_ready",
+    "core_exited",
+    "stop",
+    "stopped",
+    "fail",
+    "retry"
+  ],
+  "transitions": [
+    { "from": "IDLE", "event": "start", "to": "PREPARING" },
+    { "from": "PREPARING", "event": "core_spawned", "to": "CONNECTING" },
+    { "from": "PREPARING", "event": "fail", "to": "FAILED" },
+    { "from": "PREPARING", "event": "stop", "to": "DISCONNECTING" },
+    { "from": "CONNECTING", "event": "core_ready", "to": "CONNECTED" },
+    { "from": "CONNECTING", "event": "fail", "to": "FAILED" },
+    { "from": "CONNECTING", "event": "core_exited", "to": "FAILED" },
+    { "from": "CONNECTING", "event": "stop", "to": "DISCONNECTING" },
+    { "from": "CONNECTED", "event": "core_exited", "to": "RECONNECTING" },
+    { "from": "CONNECTED", "event": "stop", "to": "DISCONNECTING" },
+    { "from": "RECONNECTING", "event": "core_spawned", "to": "CONNECTING" },
+    { "from": "RECONNECTING", "event": "fail", "to": "FAILED" },
+    { "from": "RECONNECTING", "event": "stop", "to": "DISCONNECTING" },
+    { "from": "DISCONNECTING", "event": "stopped", "to": "IDLE" },
+    { "from": "DISCONNECTING", "event": "fail", "to": "FAILED" },
+    { "from": "FAILED", "event": "start", "to": "PREPARING" },
+    { "from": "FAILED", "event": "stop", "to": "IDLE" },
+    { "from": "FAILED", "event": "retry", "to": "RECONNECTING" }
+  ]
+}
