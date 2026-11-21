@@ -9,6 +9,8 @@
 class AppEnv {
   const AppEnv._();
 
+  static const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '0.1.0');
+
   /// Whether the account / sign-in system is shown. When false the app skips
   /// the login screen and runs as a plain subscription client.
   static const bool enableLogin = bool.fromEnvironment('ENABLE_LOGIN', defaultValue: true);

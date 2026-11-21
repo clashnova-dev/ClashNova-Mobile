@@ -1,5 +1,12 @@
 // Russian (Русский) messages.
 const Map<String, String> kRu = {
+  'updates.check': "Проверить обновления",
+  'updates.checking': "Проверка…",
+  'updates.current': "Установлена последняя версия",
+  'updates.available': "Доступно обновление: {version}",
+  'updates.download': "Скачать",
+  'updates.github': "Загрузки доступны на официальной странице GitHub Releases.",
+  'updates.failed': "Не удалось проверить обновления.",
   'common.cancel': 'Отмена',
   'common.add': 'Добавить',
   'common.copy': 'Копировать',

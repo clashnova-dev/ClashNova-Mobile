@@ -1,5 +1,12 @@
 // German (Deutsch) messages.
 const Map<String, String> kDe = {
+  'updates.check': "Nach Updates suchen",
+  'updates.checking': "Wird geprüft…",
+  'updates.current': "Die Version ist aktuell",
+  'updates.available': "Update verfügbar: {version}",
+  'updates.download': "Zum Download",
+  'updates.github': "Downloads werden auf der offiziellen GitHub-Releases-Seite bereitgestellt.",
+  'updates.failed': "Updates konnten nicht geprüft werden.",
   // common
   'common.cancel': 'Abbrechen',
   'common.add': 'Hinzufügen',

@@ -1,5 +1,12 @@
 // Korean (한국어) messages.
 const Map<String, String> kKo = {
+  'updates.check': "업데이트 확인",
+  'updates.checking': "확인 중…",
+  'updates.current': "최신 버전입니다",
+  'updates.available': "업데이트 가능: {version}",
+  'updates.download': "다운로드",
+  'updates.github': "공식 GitHub Releases 페이지에서 다운로드합니다.",
+  'updates.failed': "업데이트를 확인할 수 없습니다.",
   // common
   'common.cancel': '취소',
   'common.add': '추가',

@@ -1,5 +1,12 @@
 // Japanese (日本語) messages.
 const Map<String, String> kJa = {
+  'updates.check': "更新を確認",
+  'updates.checking': "確認中…",
+  'updates.current': "最新バージョンです",
+  'updates.available': "更新があります: {version}",
+  'updates.download': "ダウンロード",
+  'updates.github': "公式 GitHub Releases ページからダウンロードします。",
+  'updates.failed': "更新を確認できませんでした。",
   'common.cancel': 'キャンセル',
   'common.add': '追加',
   'common.copy': 'コピー',

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app_state.dart';
+import '../core/github_updates.dart';
 import '../env.dart';
 import '../i18n.dart';
 import '../theme.dart';
@@ -13,13 +14,13 @@ import 'nodes_page.dart';
 import 'subscriptions_page.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-const String _appVersion = '0.1.0';
+const String _appVersion = AppEnv.appVersion;
 
-/// Open an external About-page link (repository, chat group) in the browser.
+/// Open the project repository in the browser.
 void _openUrl(String url) {
   final uri = Uri.tryParse(url);
   if (uri != null &&
-      const {'https', 'tg'}.contains(uri.scheme) &&
+      const {'https'}.contains(uri.scheme) &&
       uri.host.isNotEmpty && uri.userInfo.isEmpty &&
       url.length <= 8192 && !RegExp(r'[\x00-\x1f\x7f]').hasMatch(url)) {
     launchUrl(uri, mode: LaunchMode.externalApplication).ignore();
@@ -137,6 +138,7 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           _GroupBody(children: [
+            const _UpdateRow(),
             _Row(
               icon: LucideIcons.circleHelp,
               title: t('settings.help'),
@@ -457,6 +459,59 @@ class _PickerOption extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _UpdateRow extends StatefulWidget {
+  const _UpdateRow();
+  @override
+  State<_UpdateRow> createState() => _UpdateRowState();
+}
+
+class _UpdateRowState extends State<_UpdateRow> {
+  bool _checking = false;
+
+  Future<void> _check() async {
+    if (_checking) return;
+    setState(() => _checking = true);
+    final t = AppScope.of(context).t;
+    try {
+      final update = await checkGitHubUpdate(currentVersion: AppEnv.appVersion);
+      if (!mounted) return;
+      if (update == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t('updates.current'))));
+        return;
+      }
+      final download = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(t('updates.available', {'version': update.version})),
+          content: Text(t('updates.github')),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t('common.cancel'))),
+            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(t('updates.download'))),
+          ],
+        ),
+      );
+      if (download == true && !await launchUrl(update.releaseUrl, mode: LaunchMode.externalApplication)) {
+        throw StateError('Could not open release');
+      }
+    } catch (_) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t('updates.failed'))));
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppScope.of(context).t;
+    return _Row(
+      icon: LucideIcons.refreshCw,
+      title: t('updates.check'),
+      value: _checking ? t('updates.checking') : '',
+      onTap: _checking ? null : _check,
     );
   }
 }

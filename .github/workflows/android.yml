@@ -1,0 +1,96 @@
+name: Android packages
+on:
+  workflow_dispatch:
+  push:
+    tags: ['android-v*']
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/28.2.13676358
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+          cache-dependency-path: native/go.sum
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.50.1'
+          channel: stable
+          cache: true
+      - uses: android-actions/setup-android@v3
+      - name: Install Android toolchain
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;28.2.13676358"
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter analyze --no-fatal-infos
+      - run: flutter test
+      - name: Restore reviewed libbox
+        id: libbox
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/libbox/libbox.aar
+            build/libbox/libbox.aar.sha256
+            build/libbox/android-build.json
+            build/libbox/android-build.properties
+          key: libbox-android-28.2-${{ hashFiles('native/go.mod', 'native/go.sum', 'native/source.json', 'scripts/prepare-libbox.py') }}
+      - name: Compile reviewed libbox
+        if: steps.libbox.outputs.cache-hit != 'true'
+        run: python scripts/prepare-libbox.py android
+      - name: Save reviewed libbox
+        if: always() && steps.libbox.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            build/libbox/libbox.aar
+            build/libbox/libbox.aar.sha256
+            build/libbox/android-build.json
+            build/libbox/android-build.properties
+          key: ${{ steps.libbox.outputs.cache-primary-key }}
+      - name: Configure release signing
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          python - <<'PY'
+          import base64,os,pathlib
+          key=pathlib.Path(os.environ['RUNNER_TEMP'])/'clashnova-mobile.jks'
+          assert all(os.environ.get(k) for k in ['KEYSTORE','STORE_PASSWORD','KEY_PASSWORD','KEY_ALIAS']), 'Android release signing secrets are required'
+          key.write_bytes(base64.b64decode(os.environ['KEYSTORE'],validate=True))
+          key.chmod(0o600)
+          pathlib.Path('android/key.properties').write_text('storeFile='+str(key)+'\nstorePassword='+os.environ['STORE_PASSWORD']+'\nkeyPassword='+os.environ['KEY_PASSWORD']+'\nkeyAlias='+os.environ['KEY_ALIAS']+'\n')
+          pathlib.Path('android/key.properties').chmod(0o600)
+          PY
+      - name: Build Android release
+        run: |
+          VERSION=$(python -c "import re,pathlib;print(re.search(r'^version: ([^+]+)',pathlib.Path('pubspec.yaml').read_text(),re.M)[1])")
+          flutter build apk --release --dart-define=ENABLE_LOGIN=false --dart-define=GITHUB_URL=https://github.com/clashnova-dev/ClashNova-Mobile --dart-define=APP_VERSION="$VERSION"
+      - name: Native Android tests
+        working-directory: android
+        run: ./gradlew :sing_box:testReleaseUnitTest
+      - run: python -m pip install Pillow==12.0.0
+      - name: Verify signed package identity and icon
+        run: python scripts/collect-android-package.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ClashNova-Mobile-Android
+          path: release-artifacts/
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 30
+      - name: Remove signing material
+        if: always()
+        run: rm -f android/key.properties "$RUNNER_TEMP/clashnova-mobile.jks"

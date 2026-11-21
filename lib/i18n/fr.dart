@@ -1,5 +1,12 @@
 // French (Français) messages.
 const Map<String, String> kFr = {
+  'updates.check': "Rechercher des mises à jour",
+  'updates.checking': "Vérification…",
+  'updates.current': "La version est à jour",
+  'updates.available': "Mise à jour disponible : {version}",
+  'updates.download': "Télécharger",
+  'updates.github': "Les téléchargements sont disponibles sur la page GitHub Releases officielle.",
+  'updates.failed': "Impossible de rechercher les mises à jour.",
   // common
   'common.cancel': 'Annuler',
   'common.add': 'Ajouter',

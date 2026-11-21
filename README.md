@@ -106,3 +106,9 @@ Outbound traffic is forwarded by the on-device sing-box core. The node test is a
 ## License
 
 GPL-3.0. The project links sing-box (libbox), which is GPL-3.0, so distributions must follow the same license and make the corresponding source and notices available. See [LICENSE](LICENSE).
+
+## Android releases and updates
+
+Download signed APKs from [GitHub Releases](https://github.com/clashnova-dev/ClashNova-Mobile/releases). Settings → Check for updates reads this repository’s latest published release and opens its official download page. Android verifies the persistent release certificate when installing an update.
+
+The Android packages workflow runs Flutter and native tests, compiles the pinned libbox source, builds a signed APK, and checks the package name, version, release certificate and launcher icon. Release signing material is stored in GitHub Actions secrets and is never committed. iOS is not packaged by this workflow.

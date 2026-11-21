@@ -45,6 +45,13 @@ String interpolate(String template, Map<String, String>? params) {
 }
 
 const Map<String, String> kEn = {
+  'updates.check': "Check for updates",
+  'updates.checking': "Checking…",
+  'updates.current': "You are on the latest version",
+  'updates.available': "Update available: {version}",
+  'updates.download': "View download",
+  'updates.github': "Downloads are provided by the official GitHub Releases page.",
+  'updates.failed': "Could not check for updates. Try again later.",
   // common
   'common.cancel': 'Cancel',
   'common.add': 'Add',
@@ -275,6 +282,13 @@ const Map<String, String> kEn = {
 };
 
 const Map<String, String> kZh = {
+  'updates.check': "检查更新",
+  'updates.checking': "正在检查…",
+  'updates.current': "已是最新版本",
+  'updates.available': "可更新到 {version}",
+  'updates.download': "前往下载",
+  'updates.github': "更新包由官方 GitHub Releases 页面提供。",
+  'updates.failed': "检查更新失败，请稍后重试。",
   // common
   'common.cancel': '取消',
   'common.add': '添加',
