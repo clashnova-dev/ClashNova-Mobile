@@ -30,6 +30,8 @@ jobs:
           channel: stable
           cache: true
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
       - name: Install Android toolchain
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;28.2.13676358"
       - run: flutter pub get --enforce-lockfile
@@ -49,7 +51,7 @@ jobs:
         if: steps.libbox.outputs.cache-hit != 'true'
         run: python scripts/prepare-libbox.py android
       - name: Save reviewed libbox
-        if: always() && steps.libbox.outputs.cache-hit != 'true'
+        if: always() && steps.libbox.outputs.cache-primary-key != '' && steps.libbox.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: |
