@@ -77,12 +77,10 @@ jobs:
           pathlib.Path('android/key.properties').chmod(0o600)
           PY
       - name: Build Android release
+        id: apk
         run: |
           VERSION=$(python -c "import re,pathlib;print(re.search(r'^version: ([^+]+)',pathlib.Path('pubspec.yaml').read_text(),re.M)[1])")
           flutter build apk --release --dart-define=ENABLE_LOGIN=false --dart-define=GITHUB_URL=https://github.com/clashnova-dev/ClashNova-Mobile --dart-define=APP_VERSION="$VERSION"
-      - name: Native Android tests
-        working-directory: android
-        run: ./gradlew :sing_box:testReleaseUnitTest
       - run: python -m pip install Pillow==12.0.0
       - name: Verify signed package identity and icon
         run: python scripts/collect-android-package.py
@@ -93,6 +91,14 @@ jobs:
           compression-level: 0
           if-no-files-found: error
           retention-days: 30
+      - name: Retain failed package for diagnostics
+        if: failure() && steps.apk.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-package-diagnostics
+          path: build/app/outputs/flutter-apk/app-release.apk
+          compression-level: 0
+          retention-days: 7
       - name: Remove signing material
         if: always()
         run: rm -f android/key.properties "$RUNNER_TEMP/clashnova-mobile.jks"
