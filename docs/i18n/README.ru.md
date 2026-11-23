@@ -1,21 +1,41 @@
-# ClashNova Mobile
+<div align="center">
 
-<!-- i18n-nav -->
-[English](../../README.md) · [简体中文](README.zh-CN.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · **Русский**
+<img src="../../assets/icon/icon.png" width="116" alt="ClashNova" />
 
-> Переводы могут отставать от основного документа на английском.
+<h1>ClashNova Mobile</h1>
 
-Прокси-клиент для iOS и Android на основе [sing-box](https://sing-box.sagernet.org/) (libbox), написанный на Flutter. Импортируйте подписку Clash, sing-box или универсальную — и вы подключены: на сервере ничего не выполняется. Разбор, тесты задержки и само соединение происходят на устройстве.
-
-Ядро взято из плагина [`sing_box`](https://pub.dev/packages/sing_box) (GPL-3.0), поэтому проект в целом распространяется под **GPL-3.0**.
-
-<p align="center">
-  <img src="../screenshots/home-light.png" width="230" alt="Главная (светлая)">
-  <img src="../screenshots/home-dark.png" width="230" alt="Главная (тёмная)">
-  <img src="../screenshots/nodes.png" width="230" alt="Узлы и тест задержки">
+<p>
+  <b>Прокси-клиент для iOS и Android на основе <a href="https://sing-box.sagernet.org/">sing-box</a> (libbox), написан на Flutter.</b><br/>
+  Импортируйте подписку Clash, sing-box или универсальную — на сервере ничего не выполняется.
 </p>
 
-## Возможности
+<p>
+  <a href="../../LICENSE"><img alt="License" src="https://img.shields.io/badge/License-GPL--3.0-2f6fed?style=flat-square"></a>
+  <img alt="Platforms" src="https://img.shields.io/badge/iOS%20·%20Android-5b6472?style=flat-square">
+  <img alt="Flutter" src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white">
+  <img alt="sing-box core" src="https://img.shields.io/badge/core-sing--box-7d56f4?style=flat-square">
+</p>
+
+<p>
+  <a href="../../README.md">English</a> ·
+  <a href="README.zh-CN.md">简体中文</a> ·
+  <a href="README.de.md">Deutsch</a> ·
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.ja.md">日本語</a> ·
+  <a href="README.ko.md">한국어</a> ·
+  <b>Русский</b>
+</p>
+
+<img src="../screenshots/home-light.png" width="232" alt="Home (light)" />
+<img src="../screenshots/home-dark.png" width="232" alt="Home (dark)" />
+<img src="../screenshots/nodes.png" width="232" alt="Nodes" />
+
+<p><a href="https://github.com/clashnova-dev">clashnova-dev</a></p>
+
+</div>
+
+> Переводы могут отставать от основного документа на английском.
+## ✨ Возможности
 
 **Подписки.** Три формата разбираются в узлы на устройстве:
 
@@ -31,7 +51,7 @@
 
 **Интерфейс.** Светлая / тёмная / системная темы и семь языков — упрощённый китайский, English, 日本語, 한국어, Deutsch, Français, Русский — переключаются в настройках и применяются сразу.
 
-## Скриншоты
+## 📸 Скриншоты
 
 | Узлы | Подписки | Настройки | Справка |
 | :-: | :-: | :-: | :-: |
@@ -41,7 +61,7 @@
 | :-: | :-: | :-: | :-: |
 | <img src="../screenshots/add-subscription.png" width="190"> | <img src="../screenshots/language.png" width="190"> | <img src="../screenshots/home-light.png" width="190"> | <img src="../screenshots/home-dark.png" width="190"> |
 
-## Сборка
+## 🛠️ Сборка
 
 Понадобятся Flutter (версия задана ограничением `sdk` в [pubspec.yaml](../../pubspec.yaml)) и набор инструментов для каждой целевой платформы.
 
@@ -80,7 +100,7 @@ VPN на iOS предоставляет Network Extension, поэтому он *
 
 Используйте `flutter run -d <устройство>` или установите release-APK. Первое подключение вызывает системный запрос авторизации VPN; разрешите его.
 
-## Структура проекта
+## 🗂️ Структура проекта
 
 ```
 lib/
@@ -98,6 +118,6 @@ lib/
 
 Фактический исходящий трафик пересылает ядро sing-box на устройстве. Тест узла — это прямое TCP-рукопожатие: он отражает доступность и задержку сервера, а не полную пропускную способность через прокси.
 
-## Лицензия
+## 📄 Лицензия
 
 GPL-3.0. Проект линкует sing-box (libbox) под GPL-3.0, поэтому дистрибутивы должны соблюдать ту же лицензию и предоставлять соответствующий исходный код и уведомления. См. [LICENSE](../../LICENSE).

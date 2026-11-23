@@ -1,21 +1,41 @@
-# ClashNova Mobile
+<div align="center">
 
-<!-- i18n-nav -->
-[English](../../README.md) · **简体中文** · [Deutsch](README.de.md) · [Français](README.fr.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Русский](README.ru.md)
+<img src="../../assets/icon/icon.png" width="116" alt="ClashNova" />
 
-> 译文可能滞后于英文主文档。
+<h1>ClashNova Mobile</h1>
 
-基于 [sing-box](https://sing-box.sagernet.org/)(libbox)的 iOS / Android 代理客户端,用 Flutter 编写。导入 Clash、sing-box 或通用订阅即可连接——不依赖任何服务端。订阅解析、测速和连接本身都在设备上完成。
-
-内核来自 [`sing_box`](https://pub.dev/packages/sing_box) 插件(GPL-3.0),因此本项目整体以 **GPL-3.0** 发布。
-
-<p align="center">
-  <img src="../screenshots/home-light.png" width="230" alt="首页(浅色)">
-  <img src="../screenshots/home-dark.png" width="230" alt="首页(深色)">
-  <img src="../screenshots/nodes.png" width="230" alt="节点与测速">
+<p>
+  <b>基于 <a href="https://sing-box.sagernet.org/">sing-box</a>(libbox)的 iOS 与 Android 代理客户端,用 Flutter 编写。</b><br/>
+  导入 Clash、sing-box 或通用订阅即可连接 —— 不依赖任何服务端。
 </p>
 
-## 功能
+<p>
+  <a href="../../LICENSE"><img alt="License" src="https://img.shields.io/badge/License-GPL--3.0-2f6fed?style=flat-square"></a>
+  <img alt="Platforms" src="https://img.shields.io/badge/iOS%20·%20Android-5b6472?style=flat-square">
+  <img alt="Flutter" src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white">
+  <img alt="sing-box core" src="https://img.shields.io/badge/core-sing--box-7d56f4?style=flat-square">
+</p>
+
+<p>
+  <a href="../../README.md">English</a> ·
+  <b>简体中文</b> ·
+  <a href="README.de.md">Deutsch</a> ·
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.ja.md">日本語</a> ·
+  <a href="README.ko.md">한국어</a> ·
+  <a href="README.ru.md">Русский</a>
+</p>
+
+<img src="../screenshots/home-light.png" width="232" alt="Home (light)" />
+<img src="../screenshots/home-dark.png" width="232" alt="Home (dark)" />
+<img src="../screenshots/nodes.png" width="232" alt="Nodes" />
+
+<p><a href="https://github.com/clashnova-dev">clashnova-dev</a></p>
+
+</div>
+
+> 译文可能滞后于英文主文档。
+## ✨ 功能
 
 **订阅。** 三种格式都会在设备上解析成节点:
 
@@ -31,7 +51,7 @@
 
 **界面。** 浅色 / 深色 / 跟随系统主题,以及七种语言——简体中文、English、日本語、한국어、Deutsch、Français、Русский——在设置里切换,即时生效。
 
-## 截图
+## 📸 截图
 
 | 节点 | 订阅 | 设置 | 帮助 |
 | :-: | :-: | :-: | :-: |
@@ -41,7 +61,7 @@
 | :-: | :-: | :-: | :-: |
 | <img src="../screenshots/add-subscription.png" width="190"> | <img src="../screenshots/language.png" width="190"> | <img src="../screenshots/home-light.png" width="190"> | <img src="../screenshots/home-dark.png" width="190"> |
 
-## 构建
+## 🛠️ 构建
 
 需要 Flutter(版本以 [pubspec.yaml](../../pubspec.yaml) 的 `sdk` 约束为准)和各目标平台的工具链。
 
@@ -80,7 +100,7 @@ iOS 的 VPN 由 Network Extension 提供,因此**只能在真机运行**(模拟�
 
 使用 `flutter run -d <设备>` 或安装 release APK。首次连接会触发系统 VPN 授权弹窗,允许即可。
 
-## 项目结构
+## 🗂️ 项目结构
 
 ```
 lib/
@@ -98,6 +118,6 @@ lib/
 
 实际出站流量由设备上的 sing-box 内核转发。节点测速是直连 TCP 握手——反映服务器可达性与延迟,不是走代理的完整吞吐。
 
-## 许可证
+## 📄 许可证
 
 GPL-3.0。本项目链接了 GPL-3.0 的 sing-box(libbox),分发时须遵循同一许可证并提供相应源码与声明。见 [LICENSE](../../LICENSE)。

@@ -1,20 +1,40 @@
-# ClashNova Mobile
+<div align="center">
 
-Maintained by [clashnova-dev](https://github.com/clashnova-dev).
+<img src="assets/icon/icon.png" width="116" alt="ClashNova" />
 
-English · [简体中文](docs/i18n/README.zh-CN.md) · [Deutsch](docs/i18n/README.de.md) · [Français](docs/i18n/README.fr.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Русский](docs/i18n/README.ru.md)
+<h1>ClashNova Mobile</h1>
 
-An iOS and Android proxy client built on [sing-box](https://sing-box.sagernet.org/) (libbox), written in Flutter. Import a Clash, sing-box, or universal subscription and you're connected — nothing runs on a server. Parsing, latency tests, and the connection itself all happen on the device.
-
-The core comes from the [`sing_box`](https://pub.dev/packages/sing_box) plugin (GPL-3.0), so the project as a whole is released under **GPL-3.0**.
-
-<p align="center">
-  <img src="docs/screenshots/home-light.png" width="230" alt="Home (light)">
-  <img src="docs/screenshots/home-dark.png" width="230" alt="Home (dark)">
-  <img src="docs/screenshots/nodes.png" width="230" alt="Nodes and latency test">
+<p>
+  <b>An iOS &amp; Android proxy client built on <a href="https://sing-box.sagernet.org/">sing-box</a> (libbox), written in Flutter.</b><br/>
+  Import a Clash, sing-box or universal subscription and you're connected — nothing runs on a server.
 </p>
 
-## Features
+<p>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-GPL--3.0-2f6fed?style=flat-square"></a>
+  <img alt="Platforms" src="https://img.shields.io/badge/iOS%20·%20Android-5b6472?style=flat-square">
+  <img alt="Flutter" src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white">
+  <img alt="sing-box core" src="https://img.shields.io/badge/core-sing--box-7d56f4?style=flat-square">
+</p>
+
+<p>
+  <b>English</b> ·
+  <a href="docs/i18n/README.zh-CN.md">简体中文</a> ·
+  <a href="docs/i18n/README.de.md">Deutsch</a> ·
+  <a href="docs/i18n/README.fr.md">Français</a> ·
+  <a href="docs/i18n/README.ja.md">日本語</a> ·
+  <a href="docs/i18n/README.ko.md">한국어</a> ·
+  <a href="docs/i18n/README.ru.md">Русский</a>
+</p>
+
+<img src="docs/screenshots/home-light.png" width="232" alt="Home (light)" />
+<img src="docs/screenshots/home-dark.png" width="232" alt="Home (dark)" />
+<img src="docs/screenshots/nodes.png" width="232" alt="Nodes" />
+
+<p><a href="https://github.com/clashnova-dev">clashnova-dev</a></p>
+
+</div>
+
+## ✨ Features
 
 **Subscriptions.** Three formats are parsed into nodes on the device:
 
@@ -26,11 +46,11 @@ Each subscription can be refreshed, copied, or deleted; the card shows the node 
 
 **Nodes.** Search by name, region, or protocol and sort by latency. *Test* runs a TCP handshake against every node — with a progress indicator you can interrupt — and grades the result green (≤100 ms), yellow (≤300 ms), or red, with *Timeout* for anything unreachable. Choose a node by hand, or leave it on automatic selection (the core's `urltest` group picks the fastest).
 
-**Connection and routing.** The system VPN runs through a Network Extension (Packet Tunnel) on iOS and `VpnService` on Android. Switch routing between **rule**, **global**, and **direct** while connected (wired to the core's clash mode). A live connections list (each one closable), the core's live log, and up/down speed are all available.
+**Connection & routing.** The system VPN runs through a Network Extension (Packet Tunnel) on iOS and `VpnService` on Android. Switch routing between **rule**, **global**, and **direct** while connected (wired to the core's clash mode). A live connections list (each one closable), the core's live log, and up/down speed are all available.
 
 **Interface.** Light / dark / follow-system themes, and seven languages — Simplified Chinese, English, 日本語, 한국어, Deutsch, Français, Русский — switched in Settings and applied immediately.
 
-## Screenshots
+## 📸 Screenshots
 
 | Nodes | Subscriptions | Settings | Help |
 | :-: | :-: | :-: | :-: |
@@ -40,7 +60,7 @@ Each subscription can be refreshed, copied, or deleted; the card shows the node 
 | :-: | :-: | :-: | :-: |
 | <img src="docs/screenshots/add-subscription.png" width="190"> | <img src="docs/screenshots/language.png" width="190"> | <img src="docs/screenshots/home-light.png" width="190"> | <img src="docs/screenshots/home-dark.png" width="190"> |
 
-## Building
+## 🛠️ Building
 
 You'll need Flutter (the version is pinned by the `sdk` constraint in [pubspec.yaml](pubspec.yaml)) and the toolchain for each target platform.
 
@@ -85,7 +105,7 @@ Use `flutter run -d <device>` for development. Release builds use `android/key.p
 
 Production API/subscription requests require HTTPS. Debug builds allow HTTP only for explicit loopback/Android-emulator addresses; a remote HTTP backend must be upgraded to HTTPS.
 
-## Project layout
+## 🗂️ Project layout
 
 ```
 lib/
@@ -103,10 +123,9 @@ lib/
 
 Outbound traffic is forwarded by the on-device sing-box core. The node test is a direct TCP handshake — it reflects server reachability and latency, not full throughput through the proxy.
 
-## License
+## 📄 License
 
-GPL-3.0. The project links sing-box (libbox), which is GPL-3.0, so distributions must follow the same license and make the corresponding source and notices available. See [LICENSE](LICENSE).
-
+GPL-3.0 — see [LICENSE](LICENSE). The project links sing-box (libbox), which is GPL-3.0, so distributions must follow the same license and make the corresponding source and notices available.
 ## Android releases and updates
 
 Download signed APKs from [GitHub Releases](https://github.com/clashnova-dev/ClashNova-Mobile/releases). Settings → Check for updates reads this repository’s latest published release and opens its official download page. Android verifies the persistent release certificate when installing an update.

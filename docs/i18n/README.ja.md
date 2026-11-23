@@ -1,21 +1,41 @@
-# ClashNova Mobile
+<div align="center">
 
-<!-- i18n-nav -->
-[English](../../README.md) · [简体中文](README.zh-CN.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · **日本語** · [한국어](README.ko.md) · [Русский](README.ru.md)
+<img src="../../assets/icon/icon.png" width="116" alt="ClashNova" />
 
-> 翻訳は英語の主ドキュメントより古い場合があります。
+<h1>ClashNova Mobile</h1>
 
-[sing-box](https://sing-box.sagernet.org/)(libbox)をベースにした iOS / Android 向けプロキシクライアントで、Flutter で書かれています。Clash / sing-box / 汎用のサブスクリプションを取り込むだけで接続でき、サーバー側では何も動きません。解析・遅延テスト・接続そのものがすべて端末上で行われます。
-
-コアは [`sing_box`](https://pub.dev/packages/sing_box) プラグイン(GPL-3.0)に由来するため、本プロジェクト全体を **GPL-3.0** で公開しています。
-
-<p align="center">
-  <img src="../screenshots/home-light.png" width="230" alt="ホーム(ライト)">
-  <img src="../screenshots/home-dark.png" width="230" alt="ホーム(ダーク)">
-  <img src="../screenshots/nodes.png" width="230" alt="ノードと遅延テスト">
+<p>
+  <b><a href="https://sing-box.sagernet.org/">sing-box</a>(libbox)をベースにした iOS / Android 向けプロキシクライアント。Flutter 製。</b><br/>
+  Clash / sing-box / 汎用のサブスクリプションを取り込むだけで接続でき、サーバーは不要です。
 </p>
 
-## 機能
+<p>
+  <a href="../../LICENSE"><img alt="License" src="https://img.shields.io/badge/License-GPL--3.0-2f6fed?style=flat-square"></a>
+  <img alt="Platforms" src="https://img.shields.io/badge/iOS%20·%20Android-5b6472?style=flat-square">
+  <img alt="Flutter" src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white">
+  <img alt="sing-box core" src="https://img.shields.io/badge/core-sing--box-7d56f4?style=flat-square">
+</p>
+
+<p>
+  <a href="../../README.md">English</a> ·
+  <a href="README.zh-CN.md">简体中文</a> ·
+  <a href="README.de.md">Deutsch</a> ·
+  <a href="README.fr.md">Français</a> ·
+  <b>日本語</b> ·
+  <a href="README.ko.md">한국어</a> ·
+  <a href="README.ru.md">Русский</a>
+</p>
+
+<img src="../screenshots/home-light.png" width="232" alt="Home (light)" />
+<img src="../screenshots/home-dark.png" width="232" alt="Home (dark)" />
+<img src="../screenshots/nodes.png" width="232" alt="Nodes" />
+
+<p><a href="https://github.com/clashnova-dev">clashnova-dev</a></p>
+
+</div>
+
+> 翻訳は英語の主ドキュメントより古い場合があります。
+## ✨ 機能
 
 **サブスクリプション。** 3 種類の形式が端末上でノードに解析されます。
 
@@ -31,7 +51,7 @@
 
 **インターフェイス。** ライト / ダーク / システム追従テーマと、7 言語——簡体字中国語、English、日本語、한국어、Deutsch、Français、Русский——を設定で切り替え、即座に反映します。
 
-## スクリーンショット
+## 📸 スクリーンショット
 
 | ノード | サブスクリプション | 設定 | ヘルプ |
 | :-: | :-: | :-: | :-: |
@@ -41,7 +61,7 @@
 | :-: | :-: | :-: | :-: |
 | <img src="../screenshots/add-subscription.png" width="190"> | <img src="../screenshots/language.png" width="190"> | <img src="../screenshots/home-light.png" width="190"> | <img src="../screenshots/home-dark.png" width="190"> |
 
-## ビルド
+## 🛠️ ビルド
 
 Flutter(バージョンは [pubspec.yaml](../../pubspec.yaml) の `sdk` 制約に従う)と各ターゲットプラットフォームのツールチェーンが必要です。
 
@@ -80,7 +100,7 @@ iOS の VPN は Network Extension が提供するため、**実機でのみ動�
 
 `flutter run -d <デバイス>` を使うか、release APK をインストールします。初回接続でシステムの VPN 認可ダイアログが表示されるので、許可してください。
 
-## プロジェクト構成
+## 🗂️ プロジェクト構成
 
 ```
 lib/
@@ -98,6 +118,6 @@ lib/
 
 実際の送信トラフィックは端末上の sing-box コアが転送します。ノードテストは直接の TCP ハンドシェイクで——サーバーの到達性と遅延を反映し、プロキシ経由の完全なスループットではありません。
 
-## ライセンス
+## 📄 ライセンス
 
 GPL-3.0。本プロジェクトは GPL-3.0 の sing-box(libbox)をリンクしているため、配布時は同じライセンスに従い、対応するソースコードと表示を提供する必要があります。[LICENSE](../../LICENSE) を参照してください。

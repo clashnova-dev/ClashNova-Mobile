@@ -1,21 +1,41 @@
-# ClashNova Mobile
+<div align="center">
 
-<!-- i18n-nav -->
-[English](../../README.md) · [简体中文](README.zh-CN.md) · [Deutsch](README.de.md) · **Français** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Русский](README.ru.md)
+<img src="../../assets/icon/icon.png" width="116" alt="ClashNova" />
 
-> Les traductions peuvent être en retard sur le document principal en anglais.
+<h1>ClashNova Mobile</h1>
 
-Un client proxy iOS et Android fondé sur [sing-box](https://sing-box.sagernet.org/) (libbox), écrit en Flutter. Importez un abonnement Clash, sing-box ou universel et vous êtes connecté — rien ne tourne sur un serveur. L'analyse, les tests de latence et la connexion elle-même se font tous sur l'appareil.
-
-Le cœur provient du plugin [`sing_box`](https://pub.dev/packages/sing_box) (GPL-3.0), si bien que le projet dans son ensemble est publié sous **GPL-3.0**.
-
-<p align="center">
-  <img src="../screenshots/home-light.png" width="230" alt="Accueil (clair)">
-  <img src="../screenshots/home-dark.png" width="230" alt="Accueil (sombre)">
-  <img src="../screenshots/nodes.png" width="230" alt="Nœuds et test de latence">
+<p>
+  <b>Un client proxy iOS et Android fondé sur <a href="https://sing-box.sagernet.org/">sing-box</a> (libbox), écrit en Flutter.</b><br/>
+  Importez un abonnement Clash, sing-box ou universel et vous êtes connecté — rien ne tourne sur un serveur.
 </p>
 
-## Fonctionnalités
+<p>
+  <a href="../../LICENSE"><img alt="License" src="https://img.shields.io/badge/License-GPL--3.0-2f6fed?style=flat-square"></a>
+  <img alt="Platforms" src="https://img.shields.io/badge/iOS%20·%20Android-5b6472?style=flat-square">
+  <img alt="Flutter" src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white">
+  <img alt="sing-box core" src="https://img.shields.io/badge/core-sing--box-7d56f4?style=flat-square">
+</p>
+
+<p>
+  <a href="../../README.md">English</a> ·
+  <a href="README.zh-CN.md">简体中文</a> ·
+  <a href="README.de.md">Deutsch</a> ·
+  <b>Français</b> ·
+  <a href="README.ja.md">日本語</a> ·
+  <a href="README.ko.md">한국어</a> ·
+  <a href="README.ru.md">Русский</a>
+</p>
+
+<img src="../screenshots/home-light.png" width="232" alt="Home (light)" />
+<img src="../screenshots/home-dark.png" width="232" alt="Home (dark)" />
+<img src="../screenshots/nodes.png" width="232" alt="Nodes" />
+
+<p><a href="https://github.com/clashnova-dev">clashnova-dev</a></p>
+
+</div>
+
+> Les traductions peuvent être en retard sur le document principal en anglais.
+## ✨ Fonctionnalités
 
 **Abonnements.** Trois formats sont analysés en nœuds sur l'appareil :
 
@@ -31,7 +51,7 @@ Chaque abonnement peut être actualisé, copié ou supprimé ; la carte affiche 
 
 **Interface.** Thèmes clair / sombre / selon le système, et sept langues — chinois simplifié, anglais, 日本語, 한국어, Deutsch, Français, Русский — changées dans les paramètres et appliquées immédiatement.
 
-## Captures d'écran
+## 📸 Captures d'écran
 
 | Nœuds | Abonnements | Paramètres | Aide |
 | :-: | :-: | :-: | :-: |
@@ -41,7 +61,7 @@ Chaque abonnement peut être actualisé, copié ou supprimé ; la carte affiche 
 | :-: | :-: | :-: | :-: |
 | <img src="../screenshots/add-subscription.png" width="190"> | <img src="../screenshots/language.png" width="190"> | <img src="../screenshots/home-light.png" width="190"> | <img src="../screenshots/home-dark.png" width="190"> |
 
-## Compilation
+## 🛠️ Compilation
 
 Il vous faut Flutter (la version est fixée par la contrainte `sdk` dans [pubspec.yaml](../../pubspec.yaml)) et la chaîne d'outils de chaque plateforme cible.
 
@@ -80,7 +100,7 @@ Le VPN iOS est fourni par une Network Extension, il **ne fonctionne donc que sur
 
 Utilisez `flutter run -d <appareil>` ou installez l'APK de distribution. La première connexion déclenche l'autorisation VPN du système ; autorisez-la.
 
-## Structure du projet
+## 🗂️ Structure du projet
 
 ```
 lib/
@@ -98,6 +118,6 @@ lib/
 
 Le trafic sortant est acheminé par le cœur sing-box sur l'appareil. Le test de nœud est une poignée de main TCP directe — il reflète l'accessibilité et la latence du serveur, pas le débit complet à travers le proxy.
 
-## Licence
+## 📄 Licence
 
 GPL-3.0. Le projet lie sing-box (libbox), sous GPL-3.0 ; les distributions doivent donc suivre la même licence et fournir le code source et les mentions correspondants. Voir [LICENSE](../../LICENSE).
