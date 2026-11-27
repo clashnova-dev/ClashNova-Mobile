@@ -32,7 +32,7 @@ void main() {
     final recvFp = svc.local.fingerprint;
 
     const sender = DeviceInfo(
-        alias: 'Sender', fingerprint: 'sender-fp', deviceType: LanDeviceType.mobile);
+        alias: 'Sender', fingerprint: 'sender-fp', deviceType: LanDeviceType.phone);
     final clientId = await LanIdentity.generate(); // 发送方（客户端）身份，供 mTLS 出示
 
     // —— 配对：发起 pair，收端弹 pairRequest，用户接受 ——

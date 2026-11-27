@@ -24,6 +24,7 @@ void main() {
       onDecideUpload: (sender, files) async => saveDir.path,
       onDecidePair: (sender) async => true,
       onDecideText: (sender, text) async => true,
+      onDecideSync: (sender) async => null,
       onReceived: (item) => received = item,
     );
     await receiver.start(0); // 临时端口
@@ -33,7 +34,7 @@ void main() {
     final payload = List<int>.generate(200 * 1024, (i) => (i * 7) & 0xff);
     await src.writeAsBytes(payload);
     const sender = DeviceInfo(
-        alias: 'send', fingerprint: 'sender-fp', deviceType: LanDeviceType.mobile);
+        alias: 'send', fingerprint: 'sender-fp', deviceType: LanDeviceType.phone);
 
     // 正确指纹：发送成功，接收端校验落盘。
     await sendFile(

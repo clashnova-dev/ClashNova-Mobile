@@ -8,15 +8,15 @@ void main() {
     const info = DeviceInfo(
       alias: 'Phone',
       fingerprint: 'abc123',
-      deviceType: LanDeviceType.mobile,
+      deviceType: LanDeviceType.phone,
     );
     final json = info.toJson();
     expect(json['alias'], 'Phone');
-    expect(json['deviceType'], 'mobile');
+    expect(json['deviceType'], 'phone');
     expect(json['protocol'], 'https');
 
     final back = DeviceInfo.fromJson(json);
-    expect(back.deviceType, LanDeviceType.mobile);
+    expect(back.deviceType, LanDeviceType.phone);
     expect(back.protocol, LanProtocol.https);
     expect(back.fingerprint, 'abc123');
 
