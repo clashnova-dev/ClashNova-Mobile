@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app_state.dart';
-import '../core/github_updates.dart';
 import '../env.dart';
 import '../i18n.dart';
 import '../theme.dart';
@@ -14,20 +13,20 @@ import 'nodes_page.dart';
 import 'subscriptions_page.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-const String _appVersion = AppEnv.appVersion;
+const String _appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '0.1.1');
 
-/// Open the project repository in the browser.
+/// Open an external About-page link (repository, chat group) in the browser.
 void _openUrl(String url) {
   final uri = Uri.tryParse(url);
   if (uri != null &&
-      const {'https'}.contains(uri.scheme) &&
+      const {'https', 'tg'}.contains(uri.scheme) &&
       uri.host.isNotEmpty && uri.userInfo.isEmpty &&
       url.length <= 8192 && !RegExp(r'[\x00-\x1f\x7f]').hasMatch(url)) {
     launchUrl(uri, mode: LaunchMode.externalApplication).ignore();
   }
 }
 
-/// A brand mark (GitHub), tinted to match the other row icons.
+/// A brand mark (GitHub / X / Telegram), tinted to match the other row icons.
 Widget _brandIcon(String asset) => SvgPicture.asset(
       asset,
       width: 20,
@@ -110,60 +109,16 @@ class SettingsPage extends StatelessWidget {
             ),
           ]),
           const SizedBox(height: 18),
-          Padding(
-            padding: const EdgeInsets.only(left: 6, bottom: 8),
-            child: Text(t('settings.about'),
-                style: TextStyle(color: AppColors.muted, fontSize: 13, fontWeight: FontWeight.w600)),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(2, 0, 2, 14),
-            child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset('assets/icon/icon.png', width: 44, height: 44),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('ClashNova',
-                        style:
-                            TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink)),
-                    const SizedBox(height: 2),
-                    Text('v$_appVersion', style: TextStyle(fontSize: 12, color: AppColors.muted)),
-                  ],
-                ),
-              ],
-            ),
-          ),
           _GroupBody(children: [
-            const _UpdateRow(),
             _Row(
-              icon: LucideIcons.circleHelp,
-              title: t('settings.help'),
+              icon: LucideIcons.info,
+              title: t('settings.about'),
+              value: 'v$_appVersion',
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const HelpPage()),
+                MaterialPageRoute(builder: (_) => const AboutPage()),
               ),
             ),
-            if (AppEnv.githubUrl.isNotEmpty)
-              _Row(
-                leading: _brandIcon('assets/brand/github.svg'),
-                title: 'GitHub',
-                onTap: () => _openUrl(AppEnv.githubUrl),
-              ),
-            const _Row(icon: LucideIcons.info, title: '', value: 'v$_appVersion', titleKey: 'settings.version'),
-            const _Row(icon: LucideIcons.cpu, title: '', value: 'sing-box · libbox', titleKey: 'settings.kernel'),
-            const _Row(icon: LucideIcons.fileText, title: '', value: 'GPL-3.0', titleKey: 'settings.license'),
           ]),
-          const SizedBox(height: 18),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Text(
-              t('settings.vpnNote'),
-              style: TextStyle(color: AppColors.muted, fontSize: 12, height: 1.6),
-            ),
-          ),
           if (AppEnv.enableLogin) ...[
             const SizedBox(height: 20),
             OutlinedButton.icon(
@@ -307,6 +262,79 @@ class SettingsPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// 独立「关于」页：应用标识 + 帮助 / GitHub 链接 + 构建信息。
+class AboutPage extends StatelessWidget {
+  const AboutPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppScope.of(context).t;
+    return Scaffold(
+      appBar: AppBar(title: Text(t('settings.about'))),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(AppMetrics.pad, 8, AppMetrics.pad, 28),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(2, 8, 2, 18),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset('assets/icon/icon.png', width: 56, height: 56),
+                ),
+                const SizedBox(width: 14),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('ClashNova',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.ink)),
+                    const SizedBox(height: 3),
+                    Text('v$_appVersion',
+                        style: TextStyle(fontSize: 13, color: AppColors.muted)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          _GroupBody(children: [
+            _Row(
+              icon: LucideIcons.circleHelp,
+              title: t('settings.help'),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const HelpPage()),
+              ),
+            ),
+            if (AppEnv.githubUrl.isNotEmpty)
+              _Row(
+                leading: _brandIcon('assets/brand/github.svg'),
+                title: 'GitHub',
+                onTap: () => _openUrl(AppEnv.githubUrl),
+              ),
+            _Row(
+              leading: _brandIcon('assets/brand/x.svg'),
+              title: 'X',
+              onTap: () => _openUrl('https://x.com/ClashNova2048'),
+            ),
+            if (AppEnv.telegramUrl.isNotEmpty)
+              _Row(
+                leading: _brandIcon('assets/brand/telegram.svg'),
+                title: 'Telegram',
+                onTap: () => _openUrl(AppEnv.telegramUrl),
+              ),
+            const _Row(
+                icon: LucideIcons.info, title: '', value: 'v$_appVersion', titleKey: 'settings.version'),
+            const _Row(
+                icon: LucideIcons.cpu, title: '', value: 'sing-box · libbox', titleKey: 'settings.kernel'),
+            const _Row(
+                icon: LucideIcons.fileText, title: '', value: 'GPL-3.0', titleKey: 'settings.license'),
+          ]),
+        ],
       ),
     );
   }
@@ -459,59 +487,6 @@ class _PickerOption extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _UpdateRow extends StatefulWidget {
-  const _UpdateRow();
-  @override
-  State<_UpdateRow> createState() => _UpdateRowState();
-}
-
-class _UpdateRowState extends State<_UpdateRow> {
-  bool _checking = false;
-
-  Future<void> _check() async {
-    if (_checking) return;
-    setState(() => _checking = true);
-    final t = AppScope.of(context).t;
-    try {
-      final update = await checkGitHubUpdate(currentVersion: AppEnv.appVersion);
-      if (!mounted) return;
-      if (update == null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t('updates.current'))));
-        return;
-      }
-      final download = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(t('updates.available', {'version': update.version})),
-          content: Text(t('updates.github')),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t('common.cancel'))),
-            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(t('updates.download'))),
-          ],
-        ),
-      );
-      if (download == true && !await launchUrl(update.releaseUrl, mode: LaunchMode.externalApplication)) {
-        throw StateError('Could not open release');
-      }
-    } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t('updates.failed'))));
-    } finally {
-      if (mounted) setState(() => _checking = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final t = AppScope.of(context).t;
-    return _Row(
-      icon: LucideIcons.refreshCw,
-      title: t('updates.check'),
-      value: _checking ? t('updates.checking') : '',
-      onTap: _checking ? null : _check,
     );
   }
 }

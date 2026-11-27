@@ -14,6 +14,7 @@
   <img alt="Platforms" src="https://img.shields.io/badge/iOS%20·%20Android-5b6472?style=flat-square">
   <img alt="Flutter" src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white">
   <img alt="sing-box core" src="https://img.shields.io/badge/core-sing--box-7d56f4?style=flat-square">
+  <a href="https://x.com/ClashNova2048"><img alt="Follow on X" src="https://img.shields.io/badge/Follow-%40ClashNova2048-000000?style=flat-square&logo=x&logoColor=white"></a>
 </p>
 
 <p>
@@ -29,8 +30,6 @@
 <img src="../screenshots/home-light.png" width="232" alt="Home (light)" />
 <img src="../screenshots/home-dark.png" width="232" alt="Home (dark)" />
 <img src="../screenshots/nodes.png" width="232" alt="Nodes" />
-
-<p><a href="https://github.com/clashnova-dev">clashnova-dev</a></p>
 
 </div>
 
@@ -66,7 +65,6 @@ Jedes Abonnement lässt sich aktualisieren, kopieren oder löschen; die Karte ze
 Du brauchst Flutter (die Version ist durch die `sdk`-Einschränkung in [pubspec.yaml](../../pubspec.yaml) festgelegt) und die Toolchain für jede Zielplattform.
 
 ```sh
-cp .env.example .env
 flutter pub get
 python3 scripts/prepare-libbox.py android
 python3 scripts/prepare-libbox.py apple

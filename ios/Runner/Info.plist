@@ -27,7 +27,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>用于扫描订阅二维码并导入订阅</string>
+	<string>用于扫描二维码：导入订阅、以及连接局域网设备</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>用于发现并与同一局域网内的设备互相传输文件</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_localsend._tcp</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

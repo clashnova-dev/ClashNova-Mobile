@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sing_box/sing_box.dart';
 
@@ -13,6 +14,8 @@ import 'core/latency.dart';
 import 'core/mobile_http.dart';
 import 'core/security.dart';
 import 'core/sing_box_core.dart';
+import 'core/lan/lan_service.dart';
+import 'core/lan/lan_storage.dart';
 import 'core/subscription_parser.dart';
 import 'core/subscription_store.dart';
 import 'env.dart';
@@ -352,8 +355,27 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  /// 局域网传输服务（懒加载：首次进入局域网页面时创建并启动）。
+  LanService? lan;
+
+  /// 确保局域网服务已创建并启动（接收端 + 组播发现）。接收文件默认存到应用目录。
+  Future<LanService> ensureLan() async {
+    final existing = lan;
+    if (existing != null) return existing;
+    final storage = await LanStorage.open();
+    final docs = await getApplicationDocumentsDirectory();
+    final dir = Directory('${docs.path}/ClashNova');
+    if (!await dir.exists()) await dir.create(recursive: true);
+    final svc = LanService(storage: storage, defaultSaveDir: dir.path);
+    await svc.start();
+    lan = svc;
+    notifyListeners();
+    return svc;
+  }
+
   @override
   void dispose() {
+    lan?.dispose();
     _uptimeTimer?.cancel();
     for (final s in _subs) {
       s.cancel();
@@ -874,6 +896,85 @@ class AppState extends ChangeNotifier {
     _validateSelection();
     _savePrefs();
     notifyListeners();
+  }
+
+  // ---- LAN 跨端同步 ----
+  /// 采集本机「自建订阅 + 当前选择」为统一 payload（跨端 schema，详见桌面实现）。
+  /// content 用 sing-box JSON（outbounds），对端各自解析回自己的形态。
+  String buildSyncPayload() {
+    final active = externalSubs.where((e) => e.key == activeSubKey).firstOrNull;
+    return jsonEncode({
+      'v': 1,
+      'subs': [
+        for (final e in externalSubs)
+          {
+            'name': e.name,
+            'url': e.url,
+            'content': jsonEncode({'outbounds': e.outbounds}),
+          },
+      ],
+      'sel': {
+        'activeUrl': active?.url,
+        'activeName': active?.name,
+        'node': selectedNodeId.isEmpty ? null : selectedNodeId,
+        'chain': [...chain],
+      },
+    });
+  }
+
+  /// 应用收到的配置 payload：按 url 合并自建订阅（content→outbounds，不重新下载），
+  /// 再激活对应订阅并 best-effort 应用选中节点/链。返回合并的订阅条数。
+  Future<int> applySyncedConfig(String payload) async {
+    final data = jsonDecode(payload) as Map<String, dynamic>;
+    if (data['v'] != 1 || data['subs'] is! List) {
+      throw const FormatException('lan.syncBadPayload');
+    }
+    final byUrl = {for (final e in externalSubs) e.url: e};
+    var count = 0;
+    for (final raw in (data['subs'] as List).whereType<Map>()) {
+      final s = Map<String, dynamic>.from(raw);
+      final url = (s['url'] as String?) ?? '';
+      final content = (s['content'] as String?) ?? '';
+      if (content.isEmpty) continue;
+      final name = (s['name'] as String?)?.trim().isNotEmpty == true
+          ? (s['name'] as String).trim()
+          : (url.isEmpty ? 'sub' : url);
+      List<Map<String, dynamic>> outs;
+      try {
+        outs = await compute(SubscriptionParser.parse, content);
+      } catch (_) {
+        continue; // 跳过无法解析的订阅
+      }
+      byUrl[url] =
+          ExternalSub(name: name, url: url, outbounds: outs, updatedAt: DateTime.now());
+      count++;
+    }
+    externalSubs = byUrl.values.toList();
+
+    // 应用选择：激活对应订阅，再按 payload 覆盖选中节点/链（节点 id=outbound tag，
+    // 同端可靠；跨端若 tag 体系不同则忽略，不影响订阅已同步）。
+    final sel = (data['sel'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final activeUrl = sel['activeUrl'] as String?;
+    final activeName = sel['activeName'] as String?;
+    ExternalSub? active;
+    if (activeUrl != null && activeUrl.isNotEmpty) {
+      active = externalSubs.where((e) => e.url == activeUrl).firstOrNull;
+    }
+    active ??= (activeName != null && activeName.isNotEmpty)
+        ? externalSubs.where((e) => e.name == activeName).firstOrNull
+        : null;
+    if (active != null) {
+      activeSubKey = active.key;
+      final tags = {for (final o in active.outbounds) (o['tag'] ?? '').toString()};
+      final node = sel['node'] as String?;
+      selectedNodeId = (node != null && tags.contains(node)) ? node : '';
+      final chainIn = (sel['chain'] as List<dynamic>? ?? const []).cast<String>();
+      chain = chainIn.where(tags.contains).toList();
+    }
+    _validateSelection();
+    await _savePrefs();
+    notifyListeners();
+    return count;
   }
 
   /// Resolve which subscription the connect button uses right now.

@@ -14,6 +14,7 @@
   <img alt="Platforms" src="https://img.shields.io/badge/iOS%20·%20Android-5b6472?style=flat-square">
   <img alt="Flutter" src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white">
   <img alt="sing-box core" src="https://img.shields.io/badge/core-sing--box-7d56f4?style=flat-square">
+  <a href="https://x.com/ClashNova2048"><img alt="Follow on X" src="https://img.shields.io/badge/Follow-%40ClashNova2048-000000?style=flat-square&logo=x&logoColor=white"></a>
 </p>
 
 <p>
@@ -29,8 +30,6 @@
 <img src="docs/screenshots/home-light.png" width="232" alt="Home (light)" />
 <img src="docs/screenshots/home-dark.png" width="232" alt="Home (dark)" />
 <img src="docs/screenshots/nodes.png" width="232" alt="Nodes" />
-
-<p><a href="https://github.com/clashnova-dev">clashnova-dev</a></p>
 
 </div>
 
@@ -65,16 +64,11 @@ Each subscription can be refreshed, copied, or deleted; the card shows the node 
 You'll need Flutter (the version is pinned by the `sdk` constraint in [pubspec.yaml](pubspec.yaml)) and the toolchain for each target platform.
 
 ```sh
-cp .env.example .env
 flutter pub get
-python3 scripts/prepare-libbox.py android                                            # Go + Android SDK/NDK/JDK
-python3 scripts/prepare-libbox.py apple                                              # macOS + Xcode (for iOS)
 flutter run --dart-define-from-file=.env                                               # debug on a connected device
 flutter build apk --release --dart-define-from-file=.env                               # Android
 flutter build ipa --release --dart-define-from-file=.env --export-method development   # iOS
 ```
-
-Build only the native platform(s) you need. Native source/dependency pins live in `native/`; the small `third_party/sing_box` binding fork accepts these locally rebuilt libraries and does not fall back to the older upstream binaries. Rebuild native libraries after changing pins. See [SECURITY.md](SECURITY.md) for the review scope.
 
 ### Configuration (.env)
 
@@ -83,7 +77,6 @@ Build options are injected with `--dart-define-from-file`, from a `.env` file in
 ```
 ENABLE_LOGIN=false   # when false, the account login screen is hidden
 BASE_URL=            # optional backend URL; leave empty to run as a standalone subscription client
-GITHUB_URL=          # About page: project repository link; empty hides the row
 ```
 
 Left at these defaults, the app is a self-contained subscription client. The defaults live in [lib/env.dart](lib/env.dart).
@@ -95,15 +88,12 @@ The iOS VPN is provided by a Network Extension, so it **runs only on a real devi
 - a paid Apple Developer account;
 - signing configured for both the `Runner` and `PacketTunnel` targets in Xcode's *Signing & Capabilities*, with App Groups and Network Extensions enabled;
 - the App Group `group.dev.airport.airportMobile` and the extension bundle id `dev.airport.airportMobile.PacketTunnel` (see [lib/core/sing_box_core.dart](lib/core/sing_box_core.dart)).
-- Keychain Sharing for the app's own access group (declared in `Runner.entitlements`); the app's saved subscription credentials use device-only Keychain storage.
 
 On the first connection, iOS asks to add the VPN configuration — allow it.
 
 ### Android
 
-Use `flutter run -d <device>` for development. Release builds use `android/key.properties` (`storeFile`, `storePassword`, `keyAlias`, `keyPassword`) when supplied. Without a private release key they remain unsigned for local build validation; they never silently use the debug signing key. Sign with your release/upload key before distributing or installing a release APK. Signing files are git-ignored. The first connection triggers the system VPN authorization prompt; allow it.
-
-Production API/subscription requests require HTTPS. Debug builds allow HTTP only for explicit loopback/Android-emulator addresses; a remote HTTP backend must be upgraded to HTTPS.
+Use `flutter run -d <device>` or install the release APK. The first connection triggers the system VPN authorization prompt; allow it.
 
 ## 🗂️ Project layout
 
@@ -126,8 +116,3 @@ Outbound traffic is forwarded by the on-device sing-box core. The node test is a
 ## 📄 License
 
 GPL-3.0 — see [LICENSE](LICENSE). The project links sing-box (libbox), which is GPL-3.0, so distributions must follow the same license and make the corresponding source and notices available.
-## Android releases and updates
-
-Download signed APKs from [GitHub Releases](https://github.com/clashnova-dev/ClashNova-Mobile/releases). Settings → Check for updates reads this repository’s latest published release and opens its official download page. Android verifies the persistent release certificate when installing an update.
-
-The Android packages workflow runs the Flutter test suite, compiles the pinned libbox source, builds a signed APK, and checks the package name, version, release certificate and launcher icon. Release signing material is stored in GitHub Actions secrets and is never committed. iOS is not packaged by this workflow.

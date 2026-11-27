@@ -6,6 +6,7 @@ import '../connection.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'connections_page.dart';
+import 'lan_page.dart';
 import 'logs_page.dart';
 import 'nodes_page.dart';
 import 'settings_page.dart';
@@ -90,6 +91,13 @@ class HomePage extends StatelessWidget {
               title: t('home.logs'),
               subtitle: t('home.logsSubtitle'),
               onTap: () => _push(context, const LogsPage()),
+            ),
+            const SizedBox(height: 10),
+            MenuTile(
+              icon: LucideIcons.share2,
+              title: t('home.lan'),
+              subtitle: t('home.lanSubtitle'),
+              onTap: () => _push(context, const LanPage()),
             ),
           ],
         ),

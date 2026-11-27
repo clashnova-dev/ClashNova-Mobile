@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_state.dart';
 import 'env.dart';
+import 'lan_sync_host.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
 import 'theme.dart';
@@ -95,6 +96,7 @@ class RootShell extends StatelessWidget {
     if (AppEnv.enableLogin && !state.loggedIn && !state.localMode) {
       return const LoginPage();
     }
-    return const HomePage();
+    // 包一层全局「拉取同步」确认宿主，任意页面都能收到并弹确认。
+    return const LanSyncHost(child: HomePage());
   }
 }

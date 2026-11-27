@@ -5,11 +5,10 @@
 /// ENABLE_LOGIN=false
 /// BASE_URL=
 /// GITHUB_URL=
+/// TELEGRAM_URL=
 /// ```
 class AppEnv {
   const AppEnv._();
-
-  static const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '0.1.0');
 
   /// Whether the account / sign-in system is shown. When false the app skips
   /// the login screen and runs as a plain subscription client.
@@ -20,6 +19,13 @@ class AppEnv {
   static const String baseUrl = String.fromEnvironment('BASE_URL');
 
   /// About page: project repository link. Empty hides the row.
-  static const String githubUrl = String.fromEnvironment('GITHUB_URL', defaultValue: 'https://github.com/clashnova-dev/ClashNova-Mobile');
+  /// Defaults to the project repo so the row shows out of the box; override
+  /// via GITHUB_URL (e.g. for white-label builds), or set it empty to hide.
+  static const String githubUrl = String.fromEnvironment(
+    'GITHUB_URL',
+    defaultValue: 'https://github.com/clashnova-dev/ClashNova-Mobile',
+  );
 
+  /// About page: chat group link. Empty hides the row.
+  static const String telegramUrl = String.fromEnvironment('TELEGRAM_URL');
 }

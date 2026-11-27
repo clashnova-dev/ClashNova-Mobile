@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../app_state.dart';
+import '../core/lan/lan_service.dart';
+import '../core/lan/lan_transport.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -23,7 +27,13 @@ class SubscriptionsPage extends StatelessWidget {
     final empty = airport.isEmpty && external.isEmpty;
 
     return Scaffold(
-      appBar: AppBar(title: Text(t('subs.title'))),
+      appBar: AppBar(title: Text(t('subs.title')), actions: [
+        IconButton(
+          tooltip: t('lan.sync'),
+          icon: const Icon(LucideIcons.share2),
+          onPressed: () => _showLanSyncSheet(context, state),
+        ),
+      ]),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'add-subscription',
         onPressed: () => _showAddDialog(context, state),
@@ -69,6 +79,109 @@ class SubscriptionsPage extends StatelessWidget {
               ],
             ),
     );
+  }
+
+  /// 局域网跨端同步：列出局域网设备，点「同步」从该设备拉取其自建订阅+当前选择并应用。
+  Future<void> _showLanSyncSheet(BuildContext context, AppState state) async {
+    final t = state.t;
+    final messenger = ScaffoldMessenger.of(context);
+    LanService svc;
+    try {
+      svc = await state.ensureLan();
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(t('lan.syncFailed'))));
+      return;
+    }
+    unawaited(svc.scanSubnet());
+    if (!context.mounted) return;
+    final syncing = ValueNotifier<String>('');
+
+    Future<void> doSync(DiscoveredDevice d) async {
+      if (syncing.value.isNotEmpty) return;
+      syncing.value = d.fingerprint;
+      try {
+        final payload = await svc.syncPull(d.fingerprint);
+        final count = await state.applySyncedConfig(payload);
+        messenger
+            .showSnackBar(SnackBar(content: Text(t('lan.synced', {'count': '$count'}))));
+        if (context.mounted) Navigator.of(context).maybePop();
+      } on LanException catch (e) {
+        messenger.showSnackBar(SnackBar(
+            content: Text(e.rejected ? t('lan.syncRejected') : t('lan.syncFailed'))));
+      } catch (_) {
+        messenger.showSnackBar(SnackBar(content: Text(t('lan.syncFailed'))));
+      } finally {
+        syncing.value = '';
+      }
+    }
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.paper,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+      builder: (sheetCtx) => AnimatedBuilder(
+        animation: Listenable.merge([svc, syncing]),
+        builder: (ctx, _) {
+          final devices = svc.devices;
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(t('lan.sync'),
+                      style:
+                          const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 4),
+                  Text(t('lan.syncDesc'),
+                      style: TextStyle(fontSize: 13, color: AppColors.muted)),
+                  const SizedBox(height: 12),
+                  if (devices.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Center(
+                        child: Text(t('lan.syncNoDevices'),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 13, color: AppColors.muted)),
+                      ),
+                    )
+                  else
+                    ...devices.map((d) => Card(
+                          color: AppColors.card,
+                          elevation: 0,
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(color: AppColors.line)),
+                          child: ListTile(
+                            leading: Icon(LucideIcons.monitorSmartphone,
+                                color: AppColors.brandText),
+                            title: Text(d.alias,
+                                maxLines: 1, overflow: TextOverflow.ellipsis),
+                            subtitle: Text(d.address,
+                                style:
+                                    TextStyle(fontSize: 12, color: AppColors.muted)),
+                            trailing: FilledButton.tonal(
+                              onPressed:
+                                  syncing.value.isEmpty ? () => doSync(d) : null,
+                              child: Text(syncing.value == d.fingerprint
+                                  ? t('lan.syncing')
+                                  : t('lan.syncAction')),
+                            ),
+                          ),
+                        )),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+    syncing.dispose();
   }
 
   Future<void> _showAddDialog(BuildContext context, AppState state) async {
